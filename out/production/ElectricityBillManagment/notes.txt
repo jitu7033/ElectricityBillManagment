@@ -1,0 +1,1 @@
+use of JLabel -> visible the text on main screen and visible the photo on main screen 
