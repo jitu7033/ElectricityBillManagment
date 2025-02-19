@@ -2,10 +2,12 @@ package src.electricity.billing.system;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener; // this is  for action mean when you click on button then what happend
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-public class Register extends JFrame {
+public class Register extends JFrame implements ActionListener {
     JTextField EmployerText,passwordText,userNameText,meterText, nameText;
     JButton signUpBtn, back;
     Choice registerChoice;
@@ -13,7 +15,7 @@ public class Register extends JFrame {
     int y = 60;
     Register(){
         super("Register");
-        getContentPane().setBackground(Color.cyan);
+        getContentPane().setBackground(new Color(168,203,255));
         JLabel register = new JLabel("Create Account As:");
         register.setBounds(300,y = y,100,20);
         add(register);
@@ -101,12 +103,14 @@ public class Register extends JFrame {
         signUpBtn.setBounds(350,y = y + 40,100,30);
         signUpBtn.setBackground(Color.green); // set background color
         signUpBtn.setForeground(Color.black); // this is for set color on the text or button
+        signUpBtn.addActionListener(this);  // when click on this button then action performed on actionPerformed
         add(signUpBtn);
 
         back = new JButton("Back");
         back.setBounds(470,y = y,100,30);
         back.setBackground(new Color(0xC20514));
         back.setForeground(Color.white);
+        back.addActionListener(this);
         add(back);
 
 
@@ -125,6 +129,19 @@ public class Register extends JFrame {
         setVisible(true);
 
     }
+
+    @Override
+    public void actionPerformed(ActionEvent e) { // override the function from the actionListener
+        // e.getSource -> its give me a resources  which button you clicked on
+        if(e.getSource() == signUpBtn){
+
+        }
+        else if(e.getSource() == back){
+            setVisible(false);
+            new Login();
+        }
+    }
+
     public static void main(String[] args) {
         new Register();
     }
