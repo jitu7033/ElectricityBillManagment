@@ -1,1 +1,3 @@
 use of JLabel -> visible the text on main screen and visible the photo on main screen 
+
+build a text field then we have a class -> JtextField that help me to make a textFields 

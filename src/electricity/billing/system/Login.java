@@ -10,7 +10,7 @@ public class Login extends JFrame {
     JButton loginBtn, cancelBtn, signUpBtn;
     Login(){
         super("Login"); // help of this insert text on the head on this frame
-        getContentPane().setBackground(Color.green); // this is for background color
+        getContentPane().setBackground(Color.cyan); // this is for background color
 
         // here is user field and password field
         JLabel userName = new JLabel("UserName"); // using this show the text on frame
@@ -67,8 +67,6 @@ public class Login extends JFrame {
         profileLabel.setBounds(5,5,250,250); // left , top, width , height
         add(profileLabel);
 
-
-        
 
         // this is my screen size and default layout
         setSize(600,300); // size of the window
