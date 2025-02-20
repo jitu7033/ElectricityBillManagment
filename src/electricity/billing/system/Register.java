@@ -153,7 +153,7 @@ public class Register extends JFrame implements ActionListener {
                 ResultSet resultSet = c.statement.executeQuery(checkQuery);
                 resultSet.next();
                 int count = resultSet.getInt(1); // get count from query
-                
+
                 if(count > 0){
                     JOptionPane.showMessageDialog(null, "User Name already Exist");
                 }

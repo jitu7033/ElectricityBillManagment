@@ -1,4 +1,4 @@
 # Default ignored files
-.env
+/.env/
 /shelf/
 /workspace.xml
