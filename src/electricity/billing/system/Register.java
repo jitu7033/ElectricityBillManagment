@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener; // this is  for action mean when you click on button then what happend
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.sql.Connection;
+import java.sql.ResultSet;
 
 public class Register extends JFrame implements ActionListener {
     JTextField EmployerText,passwordText,userNameText,meterText, nameText;
@@ -142,15 +144,28 @@ public class Register extends JFrame implements ActionListener {
             String sPassword = passwordText.getText();
             String sMeter = meterText.getText();
 
+
             try{
                 database c = new database();
-                String query = null;
-                query = "insert into SignUp value('"+sMeter+"','"+sUserName+"','"+sName+"','"+sPassword+"','"+sloginAs+"')";  // insert query in mysql database
-                c.statement.executeUpdate(query);
 
-                JOptionPane.showMessageDialog(null,"Account Created SuccessFully");
-                setVisible(false);
-                new Login();
+                // 1. check if userName already exist
+                String checkQuery = "SELECT COUNT(*) FROM SignUp WHERE username = '"+sUserName+"'";
+                ResultSet resultSet = c.statement.executeQuery(checkQuery);
+                resultSet.next();
+                int count = resultSet.getInt(1); // get count from query
+
+                if(count > 0){
+                    JOptionPane.showMessageDialog(null, "User Name already Exist");
+                }
+                else{
+                    String query = null;
+                    query = "insert into SignUp value('"+sMeter+"','"+sUserName+"','"+sName+"','"+sPassword+"','"+sloginAs+"')";  // insert query in mysql database
+                    c.statement.executeUpdate(query);
+
+                    JOptionPane.showMessageDialog(null,"Account Created SuccessFully");
+                    setVisible(false);
+                    new Login();
+                }
 
             }catch (Exception error){
                 error.printStackTrace();

@@ -16,7 +16,10 @@ how to use click on button
 4. define the driverManager and get connection and provide the url of databases
 5. create statement : Statement statement
 6. create table on your databases and create signUp table first
-7.
+
+
+// for message show
+use JOptionPanel.showMessageDialog(null,"msg"); to show the message on created or at login
 
 
 

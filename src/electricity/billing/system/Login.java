@@ -87,10 +87,10 @@ public class Login extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == loginBtn){
+
             String sLoginAs = loginChoice.getSelectedItem();
             String sUserName = userText.getText();
             String sPassword = passwordText.getText();
-
 
         }
         else if(e.getSource() == cancelBtn){
