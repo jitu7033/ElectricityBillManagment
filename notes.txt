@@ -1,3 +1,25 @@
 use of JLabel -> visible the text on main screen and visible the photo on main screen 
 
-build a text field then we have a class -> JtextField that help me to make a textFields 
+build a text field then we have a class -> JtextField that help me to make a textFields
+
+how to use click on button
+1. implements actionListener
+2. set button,actionListener
+3. override the function action performed
+4. check e.getSource() -> give the name which button you clicked on
+5. write your logic on your override function
+
+* today we will discuss how to connect data bases to java using jdbc *
+1. create a class on java ex database.java
+2. setup connection using driver manager
+3. declare Connection -> is driver manager  -> Connection Connection ; // import java.sql.connection
+4. define the driverManager and get connection and provide the url of databases
+5. create statement : Statement statement
+6. create table on your databases and create signUp table first
+
+
+// for message show
+use JOptionPanel.showMessageDialog(null,"msg"); to show the message on created or at login
+
+
+

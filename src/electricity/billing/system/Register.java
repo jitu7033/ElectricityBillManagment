@@ -61,6 +61,7 @@ public class Register extends JFrame implements ActionListener {
         Name.setBounds(300,y = y + 40,100,20);
         add(Name);
 
+
         nameText = new JTextField();
         nameText.setBounds(400,y,140,20);
         add(nameText);
@@ -134,7 +135,26 @@ public class Register extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) { // override the function from the actionListener
         // e.getSource -> its give me a resources  which button you clicked on
         if(e.getSource() == signUpBtn){
+            String sloginAs = registerChoice.getSelectedItem();  // user selected what ? Admin : customer
+//            System.out.println(sloginAs);
+            String sUserName = userNameText.getText();  // get the value from the text field
+            String sName = nameText.getText();  // get the name from the name
+            String sPassword = passwordText.getText();
+            String sMeter = meterText.getText();
 
+            try{
+                database c = new database();
+                String query = null;
+                query = "insert into SignUp value('"+sMeter+"','"+sUserName+"','"+sName+"','"+sPassword+"','"+sloginAs+"')";  // insert query in mysql database
+                c.statement.executeUpdate(query);
+
+                JOptionPane.showMessageDialog(null,"Account Created SuccessFully");
+                setVisible(false);
+                new Login();
+
+            }catch (Exception error){
+                error.printStackTrace();
+            }
         }
         else if(e.getSource() == back){
             setVisible(false);

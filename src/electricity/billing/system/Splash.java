@@ -9,7 +9,7 @@ public class Splash extends JFrame {
         ImageIcon imageIcon2 = new ImageIcon(imageOne);
         JLabel imageLabel = new JLabel(imageIcon2);
         add(imageLabel);
-        setSize(400,400);
+        setSize(600,400);
         setLocation(300,100);
         setVisible(true);
 

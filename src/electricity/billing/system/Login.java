@@ -2,8 +2,10 @@ package src.electricity.billing.system;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class Login extends JFrame {
+public class Login extends JFrame implements ActionListener {
     JTextField passwordText,userText;
     Choice loginChoice;
 
@@ -17,9 +19,10 @@ public class Login extends JFrame {
         userName.setBounds(300,60,100,20);
         add(userName); // add label on frame
 
-       userText = new JTextField(); // use this for view the text field on frame
+        userText = new JTextField(); // use this for view the text field on frame
         userText.setBounds(400,60,150,20);
         add(userText);
+
 
         JLabel userPassword = new JLabel("Password"); // using this show the text on frame
         userPassword.setBounds(300,100,100,20);
@@ -28,7 +31,6 @@ public class Login extends JFrame {
         passwordText = new JTextField();
         passwordText.setBounds(400,100,150,20);
         add(passwordText);
-
 
 
 
@@ -49,15 +51,22 @@ public class Login extends JFrame {
         // here is inserted all the button login ,cancel, and signUp
         loginBtn = new JButton("Login"); // this is for create a button
         loginBtn.setBounds(330,180,100,20);
+        loginBtn.addActionListener(this);  // this is to use the define when you clicking on this to inform the event listener
         add(loginBtn);
+
 
         cancelBtn = new JButton("Cancel"); // this is for create a button
         cancelBtn.setBounds(440,180,100,20);
+        cancelBtn.addActionListener(this);
         add(cancelBtn);
+
 
         signUpBtn = new JButton("SignUP"); // this is for create a button
         signUpBtn.setBounds(400,220,100,20);
+        signUpBtn.addActionListener(this);
         add(signUpBtn);
+
+
 
         // insert image on the frame
         ImageIcon profileOne = new ImageIcon(ClassLoader.getSystemResource("src/icon/splash/profile.png"));
@@ -73,10 +82,26 @@ public class Login extends JFrame {
         setLocation(400,200);
         setLayout(null); // remove default layout from the frame
         setVisible(true);
-
-
-
     }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == loginBtn){
+            String sLoginAs = loginChoice.getSelectedItem();
+            String sUserName = userText.getText();
+            String sPassword = passwordText.getText();
+
+
+        }
+        else if(e.getSource() == cancelBtn){
+            setVisible(false);
+        }
+        else if(e.getSource() == signUpBtn){
+            setVisible(false);
+            new Register();
+        }
+    }
+
     public static void main(String[] args) {
         new Login();
     }
