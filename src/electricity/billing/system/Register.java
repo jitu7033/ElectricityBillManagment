@@ -138,11 +138,11 @@ public class Register extends JFrame implements ActionListener {
         // e.getSource -> its give me a resources  which button you clicked on
         if(e.getSource() == signUpBtn){
             String sloginAs = registerChoice.getSelectedItem();  // user selected what ? Admin : customer
-//            System.out.println(sloginAs);
             String sUserName = userNameText.getText();  // get the value from the text field
             String sName = nameText.getText();  // get the name from the name
             String sPassword = passwordText.getText();
             String sMeter = meterText.getText();
+            String sEmployer = EmployerText.getText();
 
 
             try{
@@ -153,7 +153,7 @@ public class Register extends JFrame implements ActionListener {
                 ResultSet resultSet = c.statement.executeQuery(checkQuery);
                 resultSet.next();
                 int count = resultSet.getInt(1); // get count from query
-
+                
                 if(count > 0){
                     JOptionPane.showMessageDialog(null, "User Name already Exist");
                 }

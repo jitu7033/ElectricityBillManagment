@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class Login extends JFrame implements ActionListener {
     JTextField passwordText,userText;
@@ -42,7 +44,7 @@ public class Login extends JFrame implements ActionListener {
 
         loginChoice = new Choice(); // this is for create choices
         loginChoice.add("Admin");
-        loginChoice.add("customer");
+        loginChoice.add("Customer");
         loginChoice.setBounds(400, 140,150,20);
         add(loginChoice);
 
@@ -88,9 +90,29 @@ public class Login extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == loginBtn){
 
-            String sLoginAs = loginChoice.getSelectedItem();
+            String user = loginChoice.getSelectedItem();
             String sUserName = userText.getText();
             String sPassword = passwordText.getText();
+
+            try{
+                database c = new database();
+                // 1. check if the user name exist
+                String checkQuery = "SELECT * FROM SignUp WHERE userName = '"+sUserName+"' and password = '"+sPassword+"'and userType = '"+user+"'";  // check username exist on the data bases
+                ResultSet resultSet = c.statement.executeQuery(checkQuery);
+
+                if(resultSet.next()){
+                    JOptionPane.showMessageDialog(null,"Login Successfully");
+                    setVisible(false);
+                    // go to the next page
+                }
+                else{
+                    JOptionPane.showMessageDialog(null,"! Invalid  UserName or password or user");
+                }
+            }
+            catch (Exception error){
+                System.out.println("error");
+                error.printStackTrace();
+            }
 
         }
         else if(e.getSource() == cancelBtn){
