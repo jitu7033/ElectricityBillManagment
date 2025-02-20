@@ -146,7 +146,6 @@ public class Register extends JFrame implements ActionListener {
 
             try{
                 database c = new database();
-
                 // 1. check if userName already exist
                 String checkQuery = "SELECT COUNT(*) FROM SignUp WHERE username = '"+sUserName+"'";
                 ResultSet resultSet = c.statement.executeQuery(checkQuery);
