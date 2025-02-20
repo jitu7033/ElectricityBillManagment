@@ -144,7 +144,6 @@ public class Register extends JFrame implements ActionListener {
             String sMeter = meterText.getText();
             String sEmployer = EmployerText.getText();
 
-
             try{
                 database c = new database();
 
@@ -158,6 +157,20 @@ public class Register extends JFrame implements ActionListener {
                     JOptionPane.showMessageDialog(null, "User Name already Exist");
                 }
                 else{
+                    if(! isValidPassword(sPassword)){
+                        JOptionPane.showMessageDialog(null,
+                                "Password must be at least 8 characters long, contain an uppercase letter, a lowercase letter, a digit, and a special character!",
+                                "Invalid Password",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    if(!isValidUsername(sUserName)){
+                        JOptionPane.showMessageDialog(null,
+                                "Username must start with a letter, be 5-15 characters long, and contain only letters, digits, or underscores!",
+                                "Invalid Username",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                     String query = null;
                     query = "insert into SignUp value('"+sMeter+"','"+sUserName+"','"+sName+"','"+sPassword+"','"+sloginAs+"')";  // insert query in mysql database
                     c.statement.executeUpdate(query);
@@ -175,7 +188,24 @@ public class Register extends JFrame implements ActionListener {
             setVisible(false);
             new Login();
         }
+
     }
+
+    public static boolean isValidPassword(String password) {
+        // Password must be at least 8 characters, contain at least one uppercase letter, one lowercase letter, one digit, and one special character
+        String passwordPattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,}$";
+
+        return password.matches(passwordPattern);
+    }
+
+    public static boolean isValidUsername(String username) {
+        // Username must start with a letter, contain only letters, numbers, and underscores, and be 5-15 characters long
+        String usernamePattern = "^[A-Za-z][A-Za-z0-9_]{4,14}$";
+
+        return username.matches(usernamePattern);
+    }
+
+
 
     public static void main(String[] args) {
         new Register();
