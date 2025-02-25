@@ -25,7 +25,6 @@ public class Login extends JFrame implements ActionListener {
         userText.setBounds(400,60,150,20);
         add(userText);
 
-
         JLabel userPassword = new JLabel("Password"); // using this show the text on frame
         userPassword.setBounds(300,100,100,20);
         add(userPassword); // add label on frame
@@ -33,7 +32,6 @@ public class Login extends JFrame implements ActionListener {
         passwordText = new JTextField();
         passwordText.setBounds(400,100,150,20);
         add(passwordText);
-
 
 
         // here is choice for user mode and admin mode
@@ -47,8 +45,6 @@ public class Login extends JFrame implements ActionListener {
         loginChoice.add("Customer");
         loginChoice.setBounds(400, 140,150,20);
         add(loginChoice);
-
-
 
         // here is inserted all the button login ,cancel, and signUp
         loginBtn = new JButton("Login"); // this is for create a button
@@ -67,7 +63,6 @@ public class Login extends JFrame implements ActionListener {
         signUpBtn.setBounds(400,220,100,20);
         signUpBtn.addActionListener(this);
         add(signUpBtn);
-
 
 
         // insert image on the frame
@@ -102,8 +97,11 @@ public class Login extends JFrame implements ActionListener {
 
                 if(resultSet.next()){
                     JOptionPane.showMessageDialog(null,"Login Successfully");
-                    setVisible(false);
                     // go to the next page
+                    new main_class();
+                    setVisible(false);
+
+
                 }
                 else{
                     JOptionPane.showMessageDialog(null,"! Invalid  UserName or password or user");
