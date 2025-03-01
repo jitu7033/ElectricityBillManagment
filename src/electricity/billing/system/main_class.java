@@ -21,6 +21,7 @@ public class main_class extends JFrame {
 
         // for dropdown
 
+
         newCustomer = new JMenuItem("New Customer");
         newCustomer.setFont(new Font("serif", Font.PLAIN,15));
 //        ImageIcon newCustomerIcon = new ImageIcon(ClassLoader.getSystemResource("src/icon/splash/newCustomer.png"));
@@ -48,6 +49,12 @@ public class main_class extends JFrame {
         calculateBill = new JMenuItem("Calculate Bill");
         calculateBill.setFont(new Font("serif",Font.PLAIN,15));
         menu.add(calculateBill);
+        calculateBill.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new calculate_bill();
+            }
+        });
 
 
         JMenu information = new JMenu("Information");
