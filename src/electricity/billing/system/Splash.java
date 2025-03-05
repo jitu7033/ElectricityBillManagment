@@ -2,7 +2,6 @@ package src.electricity.billing.system;
 import javax.swing.*;
 import java.awt.*;
 
-
 public class Splash extends JFrame {
     Splash(){
         ImageIcon imageIcon = new ImageIcon(ClassLoader.getSystemResource("src/icon/splash/Splash.jpg"));
