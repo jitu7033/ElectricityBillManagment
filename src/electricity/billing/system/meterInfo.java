@@ -1,146 +1,227 @@
+
 package src.electricity.billing.system;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class meterInfo extends JFrame implements ActionListener {
-    JLabel heading , meterNo , meterType, phaseCode, billType, meterLoc;
-    Choice meterChoice , meterTypeChoice , phaseCodeChoice , billTypeChoice;
-    JButton submitBtn;
-    String meterNumber;
+    private JTextField meterNoText;
+    private JComboBox<String> meterLocCombo, meterTypeCombo, phaseCodeCombo, billTypeCombo;
+    private JButton submitBtn;
+    private final String meterNumber;
 
-
-    meterInfo(String meterNumber){
+    public meterInfo(String meterNumber) {
         this.meterNumber = meterNumber;
-        JPanel panel = new JPanel();
-        panel.setLayout(null);
-        panel.setBackground(new Color(252,186,3));
-        add(panel);
 
-        heading = new JLabel("Meter Information");
-        heading.setBounds(180,10,200,20);
-        heading.setFont(new Font("tanhoma",Font.BOLD,20));
-        panel.add(heading);
+        setTitle("Meter Information");
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        meterNo = new JLabel("Meter Number : ");
-        meterNo.setBounds(50,80,140,20);
-        meterNo.setFont(new Font("Arial",Font.BOLD,15));
-        panel.add(meterNo);
+        // Make full screen
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-        JLabel meterNoText = new JLabel(meterNumber);  // pass the meter no in the j label
-        meterNoText.setBounds(200,80,150,20);
-        panel.add(meterNoText);
+        // Use BorderLayout for the frame
+        setLayout(new BorderLayout());
 
-//        meterNo.setText(meterNumber);
+        // Left panel for form with fixed width
+        JPanel formPanel = new JPanel();
+        formPanel.setPreferredSize(new Dimension(450, getHeight()));
+        formPanel.setBackground(Color.WHITE);
+        formPanel.setBorder(new EmptyBorder(40, 40, 40, 40)); // padding
+        formPanel.setLayout(new GridBagLayout());
 
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(15, 10, 15, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        meterLoc = new JLabel("Meter Location : ");
-        meterLoc.setBounds(50,120,140,20);
-        meterLoc.setFont(new Font("Arial",Font.BOLD,15));
-        panel.add(meterLoc);
+        // Heading
+        JLabel heading = new JLabel("Meter Information");
+        heading.setFont(new Font("Segoe UI", Font.BOLD, 32));
+        heading.setForeground(new Color(33, 37, 41));
+        gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
+        formPanel.add(heading, gbc);
 
+        Font labelFont = new Font("Segoe UI", Font.BOLD, 16);
+        Font inputFont = new Font("Segoe UI", Font.PLAIN, 16);
 
-        meterChoice = new Choice();
-        meterChoice.setBounds(200,120,150,20);
-        meterChoice.add("outSide");
-        meterChoice.add("InSide");
-        panel.add(meterChoice);
+        // Row 1: Meter Number label + textfield (non-editable)
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.LINE_END;
+        gbc.gridy++;
+        gbc.gridx = 0;
+        JLabel meterNoLabel = new JLabel("Meter Number:");
+        meterNoLabel.setFont(labelFont);
+        formPanel.add(meterNoLabel, gbc);
 
+        gbc.anchor = GridBagConstraints.LINE_START;
+        gbc.gridx = 1;
+        meterNoText = new JTextField(meterNumber);
+        meterNoText.setFont(inputFont);
+        meterNoText.setEditable(false);
+        meterNoText.setBackground(new Color(240, 240, 240));
+        meterNoText.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.GRAY),
+                BorderFactory.createEmptyBorder(8, 8, 8, 8)
+        ));
+        formPanel.add(meterNoText, gbc);
 
-        meterType = new JLabel("Meter Type : ");
-        meterType.setBounds(50,160,140,20);
-        meterType.setFont(new Font("Arial",Font.BOLD,15));
-        panel.add(meterType);
+        // Row 2: Meter Location
+        gbc.anchor = GridBagConstraints.LINE_END;
+        gbc.gridy++;
+        gbc.gridx = 0;
+        JLabel meterLocLabel = new JLabel("Meter Location:");
+        meterLocLabel.setFont(labelFont);
+        formPanel.add(meterLocLabel, gbc);
 
-        meterTypeChoice = new Choice();
-        meterTypeChoice.setBounds(200,160,150,20);
-        meterTypeChoice.add("Electric Meter");
-        meterTypeChoice.add("Gas Meter");
-        panel.add(meterTypeChoice);
+        gbc.anchor = GridBagConstraints.LINE_START;
+        gbc.gridx = 1;
+        meterLocCombo = new JComboBox<>(new String[]{"Outside", "Inside"});
+        meterLocCombo.setFont(inputFont);
+        formPanel.add(meterLocCombo, gbc);
 
-        phaseCode = new JLabel("Phase Code : ");
-        phaseCode.setBounds(50,200,140,20);
-        phaseCode.setFont(new Font("Arial",Font.BOLD,15));
-        panel.add(phaseCode);
+        // Row 3: Meter Type
+        gbc.anchor = GridBagConstraints.LINE_END;
+        gbc.gridy++;
+        gbc.gridx = 0;
+        JLabel meterTypeLabel = new JLabel("Meter Type:");
+        meterTypeLabel.setFont(labelFont);
+        formPanel.add(meterTypeLabel, gbc);
 
-        phaseCodeChoice = new Choice();
-        phaseCodeChoice.setBounds(200,200,150,20);
-        phaseCodeChoice.add("011");
-        phaseCodeChoice.add("112");
-        phaseCodeChoice.add("213");
-        phaseCodeChoice.add("314");
-        phaseCodeChoice.add("415");
-        phaseCodeChoice.add("516");
-        phaseCodeChoice.add("617");
-        phaseCodeChoice.add("718");
-        phaseCodeChoice.add("819");
-        phaseCodeChoice.add("920");
-        panel.add(phaseCodeChoice);
+        gbc.anchor = GridBagConstraints.LINE_START;
+        gbc.gridx = 1;
+        meterTypeCombo = new JComboBox<>(new String[]{"Electric Meter", "Gas Meter"});
+        meterTypeCombo.setFont(inputFont);
+        formPanel.add(meterTypeCombo, gbc);
 
-        billType = new JLabel("Bill Type : ");
-        billType.setBounds(50,240,140,20);
-        billType.setFont(new Font("Arial",Font.BOLD,15));
-        panel.add(billType);
+        // Row 4: Phase Code
+        gbc.anchor = GridBagConstraints.LINE_END;
+        gbc.gridy++;
+        gbc.gridx = 0;
+        JLabel phaseCodeLabel = new JLabel("Phase Code:");
+        phaseCodeLabel.setFont(labelFont);
+        formPanel.add(phaseCodeLabel, gbc);
 
-        billTypeChoice = new Choice();
-        billTypeChoice.setBounds(200,240,150,20);
-        billTypeChoice.add("Normal");
-        billTypeChoice.add("Industrial");
-        panel.add(billTypeChoice);
+        gbc.anchor = GridBagConstraints.LINE_START;
+        gbc.gridx = 1;
+        phaseCodeCombo = new JComboBox<>(new String[]{
+                "011", "112", "213", "314", "415", "516", "617", "718", "819", "920"
+        });
+        phaseCodeCombo.setFont(inputFont);
+        formPanel.add(phaseCodeCombo, gbc);
 
+        // Row 5: Bill Type
+        gbc.anchor = GridBagConstraints.LINE_END;
+        gbc.gridy++;
+        gbc.gridx = 0;
+        JLabel billTypeLabel = new JLabel("Bill Type:");
+        billTypeLabel.setFont(labelFont);
+        formPanel.add(billTypeLabel, gbc);
 
-        JLabel biilingType = new JLabel("30 Days Billing Time.............");
-        biilingType.setBounds(50,280,250,20);
-        biilingType.setFont(new Font("Arial",Font.BOLD,15));
-        panel.add(biilingType);
+        gbc.anchor = GridBagConstraints.LINE_START;
+        gbc.gridx = 1;
+        billTypeCombo = new JComboBox<>(new String[]{"Normal", "Industrial"});
+        billTypeCombo.setFont(inputFont);
+        formPanel.add(billTypeCombo, gbc);
 
-        JLabel note = new JLabel("Note : ");
-        note.setBounds(50,320,100,20);
-        note.setFont(new Font("Arial",Font.BOLD,15));
-        panel.add(note);
+        // Row 6: Note
+        gbc.gridy++;
+        gbc.gridx = 0;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        JLabel noteLabel = new JLabel("Note: Bill is calculated for 30 days by default.");
+        noteLabel.setFont(new Font("Segoe UI", Font.ITALIC, 14));
+        noteLabel.setForeground(new Color(100, 100, 100));
+        formPanel.add(noteLabel, gbc);
 
-        JLabel bydefault = new JLabel("By Default Bill is Calculated for 30 Days");
-        bydefault.setBounds(50,340,300,20);
-        bydefault.setFont(new Font("Arial",Font.BOLD,15));
-        panel.add(bydefault);
-
-
+        // Row 7: Submit Button
+        gbc.gridy++;
         submitBtn = new JButton("Submit");
-        submitBtn.setFont(new Font("Arial",Font.BOLD,15));
-        submitBtn.setBounds(300,380,100,30);
-        submitBtn.setBackground(Color.black);
+        submitBtn.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        submitBtn.setBackground(new Color(0, 123, 255));
+        submitBtn.setForeground(Color.WHITE);
+        submitBtn.setFocusPainted(false);
+        submitBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        submitBtn.setPreferredSize(new Dimension(150, 50));
         submitBtn.addActionListener(this);
-        submitBtn.setForeground(Color.white);
-        panel.add(submitBtn);
+        formPanel.add(submitBtn, gbc);
 
+        add(formPanel, BorderLayout.WEST);
 
-        setSize(700,500);
-        setLocation(400,200);
+        // Right panel with gradient background and nice message or image
+        JPanel rightPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                // Draw vertical gradient background
+                Graphics2D g2d = (Graphics2D) g;
+                int width = getWidth();
+                int height = getHeight();
+                Color color1 = new Color(252, 186, 3);
+                Color color2 = new Color(255, 140, 0);
+                GradientPaint gp = new GradientPaint(0, 0, color1, 0, height, color2);
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, width, height);
+            }
+        };
+        rightPanel.setLayout(new GridBagLayout());
+
+        JLabel infoLabel = new JLabel("<html><div style='text-align:center;'>" +
+                "<h1 style='color:white;'>Welcome to Meter Info Panel</h1>" +
+                "<p style='color:#fff; font-size:18px;'>" +
+                "Please fill out the meter details on the left panel.<br>" +
+                "Ensure all information is accurate for proper billing.<br><br>" +
+                "Contact support for any queries." +
+                "</p></div></html>");
+        rightPanel.add(infoLabel);
+
+        add(rightPanel, BorderLayout.CENTER);
+
         setVisible(true);
     }
 
     @Override
-    public void actionPerformed(ActionEvent e){
+    public void actionPerformed(ActionEvent e) {
         String sMeterNo = meterNumber;
-        String sMeterLoc = meterChoice.getSelectedItem();
-        String sMeterType = meterTypeChoice.getSelectedItem();
-        String sPhaseCode = phaseCodeChoice.getSelectedItem();
-        String sBillType = billTypeChoice.getSelectedItem();
+        String sMeterLoc = (String) meterLocCombo.getSelectedItem();
+        String sMeterType = (String) meterTypeCombo.getSelectedItem();
+        String sPhaseCode = (String) phaseCodeCombo.getSelectedItem();
+        String sBillType = (String) billTypeCombo.getSelectedItem();
         String sDays = "30";
-        try{
+
+        // Basic validation
+        if (sMeterLoc == null || sMeterType == null || sPhaseCode == null || sBillType == null) {
+            JOptionPane.showMessageDialog(this, "Please fill all fields", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
             database c = new database();
-            String insertQuery = "insert into meter_info values('"+sMeterNo+"','"+sMeterLoc+"','"+sMeterType+"','"+sPhaseCode+"','"+sBillType+"','"+sDays+"')";
-            c.statement.executeUpdate(insertQuery);
-            JOptionPane.showMessageDialog(null,"Meter Information Added Successfully");
-            setVisible(false);
-        }catch (Exception error){
-            System.out.println("error");
-            error.printStackTrace();
+            String insertQuery = "INSERT INTO meter_info " +
+                    "(meter_no, meter_location, meter_type, phase_code, bill_type, billing_days) " +
+                    "VALUES (?, ?, ?, ?, ?, ?)";
+            var ps = c.connection.prepareStatement(insertQuery);
+            ps.setString(1, sMeterNo);
+            ps.setString(2, sMeterLoc);
+            ps.setString(3, sMeterType);
+            ps.setString(4, sPhaseCode);
+            ps.setString(5, sBillType);
+            ps.setString(6, sDays);
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(this, "Meter Information Added Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+            dispose();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error adding meter information: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
     public static void main(String[] args) {
-        new meterInfo("9r80w980w9");
+        SwingUtilities.invokeLater(() -> new meterInfo("9r80w980w9"));
     }
 }

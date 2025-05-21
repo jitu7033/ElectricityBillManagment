@@ -1,120 +1,125 @@
+
 package src.electricity.billing.system;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
+import java.awt.event.*;
 import java.util.Random;
 
 public class newCustomer extends JFrame implements ActionListener {
-    TextField nameText , addressText, cityText,stateText , emailText , phoneText;
-    JLabel heading , customerName, meterNo , address , city, state,email , phone, meterText;
-    JButton nextBtn , cancelBtn;
-    newCustomer(){
+
+    TextField nameText, addressText, cityText, stateText, emailText, phoneText;
+    JLabel meterText;
+    JButton nextBtn, cancelBtn;
+
+    public newCustomer() {
         super("New Customer");
 
+        // Gradient background panel
+        JPanel background = new JPanel() {
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g;
+                GradientPaint gp = new GradientPaint(0, 0, new Color(58, 123, 213),
+                        0, getHeight(), new Color(0, 210, 255));
+                g2.setPaint(gp);
+                g2.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        background.setLayout(new GridBagLayout());
 
+        // Main form panel
         JPanel panel = new JPanel();
         panel.setLayout(null);
-        panel.setBackground(new Color(252,186,3));
-        add(panel);
+        panel.setPreferredSize(new Dimension(600, 500));
+        panel.setBackground(new Color(255, 255, 255, 220));
 
-        heading = new JLabel("New Customer");
-        heading.setBounds(180,10,200,20);
-        heading.setFont(new Font("Tahoma",Font.BOLD,20));
+        // ScrollPane to ensure visibility on smaller screens
+        JScrollPane scrollPane = new JScrollPane(panel);
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setBorder(null);
+        scrollPane.setPreferredSize(new Dimension(700, 600));
+
+        background.add(scrollPane);
+        setContentPane(background);
+
+        JLabel heading = new JLabel("New Customer");
+        heading.setBounds(200, 10, 300, 30);
+        heading.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        heading.setForeground(new Color(33, 33, 33));
         panel.add(heading);
 
-        customerName = new JLabel("New Customer : ");
-        customerName.setBounds(50,80,100,20);
-//        customerName.setFont(new Font("Arial",Font.BOLD,20));
-        panel.add(customerName);
+        Font labelFont = new Font("Segoe UI", Font.PLAIN, 16);
 
-
-        nameText = new TextField();
-        nameText.setBounds(180,80,150,20);
+        panel.add(createLabel("Customer Name:", 50, 60, labelFont));
+        nameText = createTextField(200, 60);
         panel.add(nameText);
 
-
-        meterNo = new JLabel("Meter Number : ");
-        meterNo.setBounds(50,120,100,20);
-        panel.add(meterNo);
-
-
-        meterText = new JLabel("");
-        meterText.setBounds(180,120,150,20);
+        panel.add(createLabel("Meter Number:", 50, 100, labelFont));
+        meterText = new JLabel();
+        meterText.setBounds(200, 100, 250, 25);
+        meterText.setFont(labelFont);
         panel.add(meterText);
 
-        Random ran = new Random(); // for random number generator
-        long number = ran.nextLong() % 10000000;
-        meterText.setText("" + Math.abs(number));  // set text on the meter text
+        Random ran = new Random();
+        long number = Math.abs(ran.nextLong() % 10000000);
+        meterText.setText("" + number);
 
-        address = new JLabel("Address : ");
-        address.setBounds(50,160,100,20);
-        panel.add(address);
-
-        addressText = new TextField();
-        addressText.setBounds(180,160,150,20);
+        panel.add(createLabel("Address:", 50, 140, labelFont));
+        addressText = createTextField(200, 140);
         panel.add(addressText);
 
-        city = new JLabel("City : ");
-        city.setBounds(50,200,100,20);
-        panel.add(city);
-
-        cityText = new TextField();
-        cityText.setBounds(180,200,150,20);
+        panel.add(createLabel("City:", 50, 180, labelFont));
+        cityText = createTextField(200, 180);
         panel.add(cityText);
 
-
-        state = new JLabel("State : ");
-        state.setBounds(50,240,100,20);
-        panel.add(state);
-
-        stateText = new TextField();
-        stateText.setBounds(180,240,150,20);
+        panel.add(createLabel("State:", 50, 220, labelFont));
+        stateText = createTextField(200, 220);
         panel.add(stateText);
 
-
-        email = new JLabel("Email : ");
-        email.setBounds(50,280,100,20);
-        panel.add(email);
-
-        emailText = new TextField();
-        emailText.setBounds(180,280,150,20);
+        panel.add(createLabel("Email:", 50, 260, labelFont));
+        emailText = createTextField(200, 260);
         panel.add(emailText);
 
-        phone = new JLabel("Phone : ");
-        phone.setBounds(50,320,100,20);
-        panel.add(phone);
-
-        phoneText = new TextField();
-        phoneText.setBounds(180,320,150,20);
+        panel.add(createLabel("Phone:", 50, 300, labelFont));
+        phoneText = createTextField(200, 300);
         panel.add(phoneText);
 
-
         nextBtn = new JButton("Next");
-        nextBtn.setBounds(120,360,100,30);
-        nextBtn.setBackground(Color.black);
-        nextBtn.setForeground(Color.white);
+        nextBtn.setBounds(150, 360, 100, 35);
+        nextBtn.setBackground(new Color(0, 153, 76));
+        nextBtn.setForeground(Color.WHITE);
+        nextBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
         nextBtn.addActionListener(this);
         panel.add(nextBtn);
 
         cancelBtn = new JButton("Cancel");
-        cancelBtn.setBounds(300,360,100,30);
-        cancelBtn.setBackground(new Color(0xC20514));
-        cancelBtn.setForeground(Color.white);
+        cancelBtn.setBounds(280, 360, 100, 35);
+        cancelBtn.setBackground(new Color(204, 0, 51));
+        cancelBtn.setForeground(Color.WHITE);
+        cancelBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
         cancelBtn.addActionListener(this);
         panel.add(cancelBtn);
 
-
-        setLayout(new BorderLayout());
-        add(panel,BorderLayout.CENTER);
-        setSize(700,500);
-        setLocation(400,200);
+        // Frame settings
+        setExtendedState(JFrame.MAXIMIZED_BOTH); // fullscreen
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
+    }
 
+    private JLabel createLabel(String text, int x, int y, Font font) {
+        JLabel label = new JLabel(text);
+        label.setBounds(x, y, 130, 25);
+        label.setFont(font);
+        label.setForeground(new Color(40, 40, 40));
+        return label;
+    }
 
-
+    private TextField createTextField(int x, int y) {
+        TextField tf = new TextField();
+        tf.setBounds(x, y, 250, 25);
+        return tf;
     }
 
     @Override
@@ -127,30 +132,25 @@ public class newCustomer extends JFrame implements ActionListener {
         String sEmail = emailText.getText();
         String sPhone = phoneText.getText();
 
-        if(e.getSource() == nextBtn){
-            try{
+        if (e.getSource() == nextBtn) {
+            try {
                 database c = new database();
-                String insertQuery = "INSERT INTO NewCustomer VALUES('"+sMeter+"','"+sName+"','"+sAddress+"','"+sCity+"','"+sState+"','"+sEmail+"','"+sPhone+"')";
-                String insertQuery1 = "insert into SignUp value('"+sMeter+"','','"+sName+"','','')";  // insert query in mysql database
+                String insertQuery = "INSERT INTO NewCustomer VALUES('" + sMeter + "','" + sName + "','" + sAddress + "','" + sCity + "','" + sState + "','" + sEmail + "','" + sPhone + "')";
+                String insertQuery1 = "INSERT INTO SignUp VALUES('" + sMeter + "','','" + sName + "','','')";
                 c.statement.executeUpdate(insertQuery);
                 c.statement.executeUpdate(insertQuery1);
-                JOptionPane.showMessageDialog(null,"Customer Added Successfully");
+                JOptionPane.showMessageDialog(null, "Customer Added Successfully");
                 setVisible(false);
                 new meterInfo(sMeter);
-                // pass props in the meterInfo
-            }catch(Exception E){
-                System.out.println(E.getMessage());
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
             }
-        }
-        else{
+        } else {
             setVisible(false);
-            new main_class();
         }
     }
 
     public static void main(String[] args) {
         new newCustomer();
     }
-
-
 }

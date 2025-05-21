@@ -1,9 +1,12 @@
+
+
 package src.electricity.billing.system;
 
 import net.proteanit.sql.DbUtils;
 
 import javax.swing.*;
-import javax.xml.crypto.Data;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,144 +15,237 @@ import java.sql.ResultSet;
 
 public class customer_details extends JFrame implements ActionListener {
 
-    JButton search;
-    JButton print;
-    JButton close;
+    JButton search, print, close;
+    JComboBox<String> searchMeterCombo, searchNameCombo;
+    JTable table;
 
+    customer_details() {
+        super("Customer Details");
 
-    Choice searchMeterCho;Choice searchNameCho;
-    JTable table;  // this is for table view
-    // set screen size
-    int x = 20; int y = 40;
-   customer_details(){
-       super("customer Details");
+        // Gradient background panel
+        JPanel background = new JPanel() {
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g;
+                GradientPaint gp = new GradientPaint(0, 0, new Color(58, 123, 213),
+                        0, getHeight(), new Color(0, 210, 255));
+                g2.setPaint(gp);
+                g2.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        background.setLayout(new BorderLayout());
+        background.setBorder(new EmptyBorder(30, 40, 40, 40));
 
-       JPanel panel = new JPanel();
-       panel.setLayout(null);
-       panel.setBackground(Color.yellow);
-       add(panel);
+        // Content panel with white background and rounded corners
+        JPanel contentPanel = new JPanel();
+        contentPanel.setBackground(Color.WHITE);
+        contentPanel.setBorder(new RoundedBorder(20));
+        contentPanel.setLayout(new BorderLayout(20, 20));
+        background.add(contentPanel, BorderLayout.CENTER);
 
+        // Header Label
+        JLabel heading = new JLabel("Customer Details");
+        heading.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        heading.setForeground(new Color(30, 30, 30));
+        heading.setHorizontalAlignment(SwingConstants.CENTER);
+        heading.setBorder(new EmptyBorder(20, 0, 10, 0));
+        contentPanel.add(heading, BorderLayout.NORTH);
 
-       JLabel searchMeter = new JLabel("Search By Meter No: ");
-       searchMeter.setBounds(x,y,180,20);
-       searchMeter.setFont(new Font("tahna",Font.BOLD,15));
-       panel.add(searchMeter);
+        // Top search panel
+        JPanel searchPanel = new JPanel(new GridBagLayout());
+        searchPanel.setOpaque(false);
+        searchPanel.setBorder(new EmptyBorder(0, 20, 0, 20));
+        contentPanel.add(searchPanel, BorderLayout.PAGE_START);
 
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 15, 8, 15);
+        gbc.anchor = GridBagConstraints.WEST;
 
-       searchMeterCho = new Choice();
-       searchMeterCho.setBounds(x + 180, y, 150, 20);
-       panel.add(searchMeterCho);
+        Font labelFont = new Font("Segoe UI", Font.BOLD, 15);
 
-       try{
-           database c = new database();
-           ResultSet resultSet = c.statement.executeQuery("select * from NewCustomer");
-           while (resultSet.next()){
-//               System.out.println(resultSet.getString("meter_no"));
-               searchMeterCho.add(resultSet.getString("meter_no"));
-           }
+        // Meter No Label
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        JLabel searchMeterLabel = new JLabel("Search By Meter No:");
+        searchMeterLabel.setFont(labelFont);
+        searchPanel.add(searchMeterLabel, gbc);
 
-       }catch (Exception error){
-           error.printStackTrace();
-       }
+        // Meter No ComboBox
+        gbc.gridx = 1;
+        searchMeterCombo = new JComboBox<>();
+        searchMeterCombo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        searchMeterCombo.setPreferredSize(new Dimension(180, 28));
+        searchPanel.add(searchMeterCombo, gbc);
 
-       JLabel searchName = new JLabel("Search By Name: ");
-       searchName.setBounds(x = x + 350,y,150,20);
-       searchName.setFont(new Font("tahna",Font.BOLD,15));
-       panel.add(searchName);
+        // Name Label
+        gbc.gridx = 2;
+        JLabel searchNameLabel = new JLabel("Search By Name:");
+        searchNameLabel.setFont(labelFont);
+        searchPanel.add(searchNameLabel, gbc);
 
+        // Name ComboBox
+        gbc.gridx = 3;
+        searchNameCombo = new JComboBox<>();
+        searchNameCombo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        searchNameCombo.setPreferredSize(new Dimension(180, 28));
+        searchPanel.add(searchNameCombo, gbc);
 
-       searchNameCho = new Choice();
-       searchNameCho.setBounds(x + 150,y,150,20);
-       panel.add(searchNameCho);
+        // Search Button
+        gbc.gridx = 4;
+        search = new JButton("Search");
+        styleButton(search, new Color(0, 123, 255));
+        search.addActionListener(this);
+        searchPanel.add(search, gbc);
 
-       try{
-           database c = new database();
-           ResultSet resultSet = c.statement.executeQuery("select * from NewCustomer");
-           while(resultSet.next()){
-               searchNameCho.add(resultSet.getString("name"));
-           }
-       }catch (Exception error){
-           error.printStackTrace();
-       }
+        // Print Button
+        gbc.gridx = 5;
+        print = new JButton("Print");
+        styleButton(print, new Color(0, 153, 76));
+        print.addActionListener(this);
+        searchPanel.add(print, gbc);
 
+        // Close Button
+        gbc.gridx = 6;
+        close = new JButton("Cancel");
+        styleButton(close, new Color(204, 0, 51));
+        close.addActionListener(this);
+        searchPanel.add(close, gbc);
 
-       table = new JTable();
-       try{
-           database c = new database();
-           ResultSet resultSet = c.statement.executeQuery("select * from NewCustomer");
-           table.setModel(DbUtils.resultSetToTableModel(resultSet));  // DbUtils mean direct set table.
-       }catch(Exception error){
-           error.printStackTrace();
-       }
-       JScrollPane scrollPane = new JScrollPane(table);
-       scrollPane.setBounds(0,110,700,500);
-       scrollPane.setBackground(Color.white);
-       panel.add(scrollPane);
+        // Table setup with scroll pane
+        table = new JTable();
+        table.setRowHeight(28);
+        table.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        table.setGridColor(new Color(220, 220, 220));
+        table.setFillsViewportHeight(true);
+        table.setShowVerticalLines(false);
+        table.setShowHorizontalLines(true);
+        table.getTableHeader().setReorderingAllowed(false);
+        table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 15));
+        table.getTableHeader().setBackground(new Color(240, 240, 240));
+        table.getTableHeader().setForeground(Color.DARK_GRAY);
 
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBorder(new LineBorder(new Color(200, 200, 200), 1, true));
+        scrollPane.setPreferredSize(new Dimension(920, 450));
+        scrollPane.getViewport().setBackground(Color.WHITE);
+        contentPanel.add(scrollPane, BorderLayout.CENTER);
 
-       search = new JButton("search");
-       search.setBackground(Color.blue);
-       search.setBounds(20,70,80,30);
-       search.setForeground(Color.white);
-       search.setFont(new Font("tahna",Font.BOLD,12));
-       search.addActionListener(this);
-       panel.add(search);
+        // Load combobox data from DB
+        loadComboBoxes();
 
-       print = new JButton("Print");
-       print.setBackground(Color.blue);
-       print.setBounds(130,70,80,30);
-       print.setForeground(Color.white);
-       print.setFont(new Font("tahna",Font.BOLD,12));
-       print.addActionListener(this);
-       panel.add(print);
+        // Load initial table data
+        loadTableData();
 
-       close = new JButton("Cancel");
-       close.setBackground(Color.red);
-       close.setBounds(240,70,80,30);
-       close.setForeground(Color.white);
-       close.setFont(new Font("tahna",Font.BOLD,12));
-       close.addActionListener(this);
-       panel.add(close);
+        // Frame setup
+        setContentPane(background);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
 
+    // Helper method to apply button styles
+    private void styleButton(JButton button, Color bgColor) {
+        button.setBackground(bgColor);
+        button.setForeground(Color.WHITE);
+        button.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder(6, 15, 6, 15));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(bgColor.darker());
+            }
 
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(bgColor);
+            }
+        });
+    }
 
+    private void loadComboBoxes() {
+        try {
+            database c = new database();
+            ResultSet rs = c.statement.executeQuery("SELECT meter_no, name FROM NewCustomer");
 
+            searchMeterCombo.removeAllItems();
+            searchMeterCombo.addItem("Select Meter No");
+            searchNameCombo.removeAllItems();
+            searchNameCombo.addItem("Select Name");
 
+            while (rs.next()) {
+                searchMeterCombo.addItem(rs.getString("meter_no"));
+                searchNameCombo.addItem(rs.getString("name"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-
-
-       setSize(700,500);
-       setLocation(400,200);
-       setVisible(true);
-   }
-
+    private void loadTableData() {
+        try {
+            database c = new database();
+            ResultSet rs = c.statement.executeQuery("SELECT * FROM NewCustomer");
+            table.setModel(DbUtils.resultSetToTableModel(rs));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-       if(e.getSource() == search){
-            String query_search = "select * from NewCustomer where meter_no = '"+searchMeterCho.getSelectedItem()+"' and name='"+searchNameCho.getSelectedItem()+"'"; // search by which meter no is selected in dropdown
-            try{
-                database c = new database();
-                ResultSet resultSet = c.statement.executeQuery(query_search);
-                table.setModel(DbUtils.resultSetToTableModel(resultSet));
-            }catch (Exception error){
-                error.printStackTrace();
+        if (e.getSource() == search) {
+            String meter = (String) searchMeterCombo.getSelectedItem();
+            String name = (String) searchNameCombo.getSelectedItem();
+
+            String query = "SELECT * FROM NewCustomer WHERE 1=1 ";
+
+            if (meter != null && !meter.equals("Select Meter No")) {
+                query += "AND meter_no = '" + meter + "' ";
             }
-       }
-       else if(e.getSource() == print){
-           try {
-               table.print();
-           } catch (PrinterException ex) {
-               throw new RuntimeException(ex);
-           }
-       }
-       else{
-           setVisible(false);
-       }
+            if (name != null && !name.equals("Select Name")) {
+                query += "AND name = '" + name + "' ";
+            }
+
+            try {
+                database c = new database();
+                ResultSet rs = c.statement.executeQuery(query);
+                table.setModel(DbUtils.resultSetToTableModel(rs));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } else if (e.getSource() == print) {
+            try {
+                boolean complete = table.print();
+                if (!complete) {
+                    JOptionPane.showMessageDialog(this, "Printing Cancelled", "Print", JOptionPane.INFORMATION_MESSAGE);
+                }
+            } catch (PrinterException ex) {
+                JOptionPane.showMessageDialog(this, "Error printing: " + ex.getMessage(), "Print Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else if (e.getSource() == close) {
+            this.dispose();
+        }
     }
 
     public static void main(String[] args) {
-        new customer_details();
+        SwingUtilities.invokeLater(() -> new customer_details());
     }
 
+    // Rounded border class for the white content panel
+    private static class RoundedBorder extends LineBorder {
+        private int radius;
+
+        public RoundedBorder(int radius) {
+            super(Color.LIGHT_GRAY, 1, true);
+            this.radius = radius;
+        }
+
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setColor(lineColor);
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
+        }
+    }
 }

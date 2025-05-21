@@ -1,126 +1,177 @@
-package src.electricity.billing.system;
 
+package src.electricity.billing.system;
 import javax.swing.*;
+import javax.swing.border.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.PreparedStatement;
+import java.awt.event.*;
 import java.sql.ResultSet;
 
 public class Login extends JFrame implements ActionListener {
-    JTextField passwordText,userText;
+    JTextField userText;
+    JPasswordField passwordText;
+    JCheckBox showPasswordCheckBox;  // <-- added checkbox here
     Choice loginChoice;
-
     JButton loginBtn, cancelBtn, signUpBtn;
-    Login(){
-        super("Login"); // help of this insert text on the head on this frame
-        getContentPane().setBackground(Color.cyan); // this is for background color
 
-        // here is user field and password field
-        JLabel userName = new JLabel("UserName"); // using this show the text on frame
-        userName.setBounds(300,60,100,20);
-        add(userName); // add label on frame
+    Login() {
+        super("Login");
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setLocationRelativeTo(null);
+        setResizable(false);
 
-        userText = new JTextField(); // use this for view the text field on frame
-        userText.setBounds(400,60,150,20);
-        add(userText);
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBackground(Color.WHITE);
+        mainPanel.setBorder(new EmptyBorder(30, 40, 30, 40));
+        add(mainPanel);
 
-        JLabel userPassword = new JLabel("Password"); // using this show the text on frame
-        userPassword.setBounds(300,100,100,20);
-        add(userPassword); // add label on frame
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(15, 15, 15, 15);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        passwordText = new JTextField();
-        passwordText.setBounds(400,100,150,20);
-        add(passwordText);
+        JLabel heading = new JLabel("User Login");
+        heading.setFont(new Font("Arial", Font.BOLD, 32));
+        heading.setForeground(new Color(0, 102, 204));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        mainPanel.add(heading, gbc);
 
+        JLabel userName = new JLabel("Username:");
+        userName.setFont(new Font("Arial", Font.PLAIN, 18));
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.LINE_END;
+        mainPanel.add(userName, gbc);
 
-        // here is choice for user mode and admin mode
+        userText = new JTextField(20);
+        userText.setFont(new Font("Arial", Font.PLAIN, 16));
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.LINE_START;
+        mainPanel.add(userText, gbc);
 
-        JLabel login = new JLabel("Login As In");
-        login.setBounds(300,140,100,20);
-        add(login);
+        JLabel userPassword = new JLabel("Password:");
+        userPassword.setFont(new Font("Arial", Font.PLAIN, 18));
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.anchor = GridBagConstraints.LINE_END;
+        mainPanel.add(userPassword, gbc);
 
-        loginChoice = new Choice(); // this is for create choices
+        passwordText = new JPasswordField(20);
+        passwordText.setFont(new Font("Arial", Font.PLAIN, 16));
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.LINE_START;
+        mainPanel.add(passwordText, gbc);
+
+        // Show Password Checkbox - NEW
+        showPasswordCheckBox = new JCheckBox("Show Password");
+        showPasswordCheckBox.setBackground(Color.WHITE);
+        showPasswordCheckBox.setFont(new Font("Arial", Font.PLAIN, 14));
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.anchor = GridBagConstraints.LINE_START;
+        mainPanel.add(showPasswordCheckBox, gbc);
+
+        // Listener to toggle password visibility
+        showPasswordCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (showPasswordCheckBox.isSelected()) {
+                    passwordText.setEchoChar((char) 0); // Show password
+                } else {
+                    passwordText.setEchoChar('\u2022'); // Mask password (bullet)
+                }
+            }
+        });
+
+        JLabel loginAs = new JLabel("Login As:");
+        loginAs.setFont(new Font("Arial", Font.PLAIN, 18));
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.anchor = GridBagConstraints.LINE_END;
+        mainPanel.add(loginAs, gbc);
+
+        loginChoice = new Choice();
         loginChoice.add("Admin");
         loginChoice.add("Customer");
-        loginChoice.setBounds(400, 140,150,20);
-        add(loginChoice);
+        JPanel choicePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        choicePanel.setBackground(Color.WHITE);
+        choicePanel.add(loginChoice);
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.LINE_START;
+        mainPanel.add(choicePanel, gbc);
 
-        // here is inserted all the button login ,cancel, and signUp
-        loginBtn = new JButton("Login"); // this is for create a button
-        loginBtn.setBounds(330,180,100,20);
-        loginBtn.addActionListener(this);  // this is to use the define when you clicking on this to inform the event listener
-        add(loginBtn);
+        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 0));
+        buttonsPanel.setBackground(Color.WHITE);
 
+        loginBtn = new JButton("Login");
+        styleButton(loginBtn, new Color(34, 167, 240));
+        loginBtn.addActionListener(this);
+        buttonsPanel.add(loginBtn);
 
-        cancelBtn = new JButton("Cancel"); // this is for create a button
-        cancelBtn.setBounds(440,180,100,20);
+        cancelBtn = new JButton("Cancel");
+        styleButton(cancelBtn, new Color(255, 99, 71));
         cancelBtn.addActionListener(this);
-        add(cancelBtn);
+        buttonsPanel.add(cancelBtn);
 
-
-        signUpBtn = new JButton("SignUP"); // this is for create a button
-        signUpBtn.setBounds(400,220,100,20);
+        signUpBtn = new JButton("Sign Up");
+        styleButton(signUpBtn, new Color(0, 177, 106));
         signUpBtn.addActionListener(this);
-        add(signUpBtn);
+        buttonsPanel.add(signUpBtn);
 
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        mainPanel.add(buttonsPanel, gbc);
 
-        // insert image on the frame
-        ImageIcon profileOne = new ImageIcon(ClassLoader.getSystemResource("src/icon/splash/profile.png"));
-        Image profileTwo = profileOne.getImage().getScaledInstance(250,250, Image.SCALE_DEFAULT); // width height get default
-        ImageIcon fProfileOne = new ImageIcon(profileTwo);
-        JLabel profileLabel = new JLabel(fProfileOne);
-        profileLabel.setBounds(5,5,250,250); // left , top, width , height
-        add(profileLabel);
-
-
-        // this is my screen size and default layout
-        setSize(600,300); // size of the window
-        setLocation(400,200);
-        setLayout(null); // remove default layout from the frame
         setVisible(true);
+    }
+
+    private void styleButton(JButton button, Color bgColor) {
+        button.setBackground(bgColor);
+        button.setForeground(Color.WHITE);
+        button.setFont(new Font("Arial", Font.BOLD, 16));
+        button.setFocusPainted(false);
+        button.setPreferredSize(new Dimension(120, 40));
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == loginBtn){
-
+        if (e.getSource() == loginBtn) {
             String user = loginChoice.getSelectedItem();
             String sUserName = userText.getText();
             String sPassword = passwordText.getText();
 
-            try{
+            try {
                 database c = new database();
-                // 1. check if the user name exist
-                String checkQuery = "SELECT * FROM SignUp WHERE userName = '"+sUserName+"' and password = '"+sPassword+"'and userType = '"+user+"'";  // check username exist on the data bases
+                String checkQuery = "SELECT * FROM SignUp WHERE userName = '" + sUserName +
+                        "' AND password = '" + sPassword + "' AND userType = '" + user + "'";
                 ResultSet resultSet = c.statement.executeQuery(checkQuery);
 
-                if(resultSet.next()){
-                    JOptionPane.showMessageDialog(null,"Login Successfully");
-                    // go to the next page
-                    new main_class();
+
+                if (resultSet.next()) {
+                    JOptionPane.showMessageDialog(null, "Login Successfully");
+                    String meter = resultSet.getString("meter_no");
+                    System.out.println(meter);
+                    new main_class(user,meter);
                     setVisible(false);
-
-
+                } else {
+                    JOptionPane.showMessageDialog(null, "Invalid Username, Password, or User Type");
                 }
-                else{
-                    JOptionPane.showMessageDialog(null,"! Invalid  UserName or password or user");
-                }
-            }
-            catch (Exception error){
-                System.out.println("error");
+            } catch (Exception error) {
                 error.printStackTrace();
             }
 
-        }
-        else if(e.getSource() == cancelBtn){
+        } else if (e.getSource() == cancelBtn) {
             setVisible(false);
-        }
-        else if(e.getSource() == signUpBtn){
+        } else if (e.getSource() == signUpBtn) {
             setVisible(false);
             new Register();
         }
     }
+
 
     public static void main(String[] args) {
         new Login();

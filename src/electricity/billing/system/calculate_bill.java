@@ -1,202 +1,170 @@
+
+
+
+
 package src.electricity.billing.system;
 
 import javax.swing.*;
-import javax.xml.transform.Result;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
 import java.sql.ResultSet;
 
-public class calculate_bill extends JFrame implements ActionListener{
-    Choice MeterChoice , monthChoice;
-    String nameText1,addressText1,unitConsumedText1,monthChoice1;
+public class calculate_bill extends JFrame implements ActionListener {
+    Choice MeterChoice, monthChoice;
     JTextField unitConsumedText;
-    JButton submit , cancelBtn;
-    JLabel MeterNo, name, address,unitConsumed,month, nameText,addressText;
-    int x = 50; int y = 50;
-    calculate_bill(){
+    JButton submit, cancelBtn;
+    JLabel nameText, addressText;
 
-        JPanel panel = new JPanel();
-        panel.setLayout(null);
-        panel.setBackground(new Color(252,186,3));
-        add(panel);
+    calculate_bill() {
+        setTitle("SmartBill - Calculate Electricity Bill");
+        setLayout(new BorderLayout());
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JLabel heading = new JLabel("Calculate ElectricCity Bill");
-        heading.setBounds(180,10,400,20);
-        heading.setFont(new Font("Tahoma",Font.BOLD,20));
-        panel.add(heading);
+        // Gradient background
+        JPanel background = new JPanel() {
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g;
+                GradientPaint gp = new GradientPaint(0, 0, new Color(72, 61, 139), 0, getHeight(), new Color(123, 104, 238));
+                g2.setPaint(gp);
+                g2.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        background.setLayout(new GridBagLayout());
 
-        MeterNo = new JLabel("Meter NO : ");
-        MeterNo.setFont(new Font("Arial",Font.BOLD,15));
-        MeterNo.setBounds(x,y,100,20);
-        panel.add(MeterNo);
+        JPanel card = new JPanel(new GridBagLayout());
+        card.setPreferredSize(new Dimension(600, 500));
+        card.setBackground(new Color(255, 255, 255, 240));
+        card.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.GRAY, 1),
+                BorderFactory.createEmptyBorder(20, 30, 20, 30)
+        ));
 
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        JLabel title = new JLabel("Calculate Electricity Bill");
+        title.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        title.setHorizontalAlignment(SwingConstants.CENTER);
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
+        card.add(title, gbc);
+
+        // Row 1: Meter Number
+        gbc.gridwidth = 1;
+        gbc.gridy++;
+        card.add(new JLabel("Meter No:"), gbc);
         MeterChoice = new Choice();
-        try{
+        try {
             database c = new database();
-            ResultSet resultSet = c.statement.executeQuery("select * from newCustomer");
-            while(resultSet.next()){
-                MeterChoice.add(resultSet.getString("meter_no"));
-            }
-            MeterChoice.setBounds(180,y,150,20);
-            panel.add(MeterChoice);
+            ResultSet rs = c.statement.executeQuery("SELECT meter_no FROM newCustomer");
+            while (rs.next()) MeterChoice.add(rs.getString("meter_no"));
+        } catch (Exception e) { e.printStackTrace(); }
+        gbc.gridx = 1;
+        card.add(MeterChoice, gbc);
 
-        }catch (Exception E) {
-            E.printStackTrace();
-        }
+        // Row 2: Name
+        gbc.gridx = 0; gbc.gridy++;
+        card.add(new JLabel("Customer Name:"), gbc);
+        nameText = new JLabel("-");
+        gbc.gridx = 1;
+        card.add(nameText, gbc);
 
-        name = new JLabel("Name : ");
-        name.setFont(new Font("Arial",Font.BOLD,15));
-        name.setBounds(x,y+40,100,20);
-        panel.add(name);
+        // Row 3: Address
+        gbc.gridx = 0; gbc.gridy++;
+        card.add(new JLabel("Address:"), gbc);
+        addressText = new JLabel("-");
+        gbc.gridx = 1;
+        card.add(addressText, gbc);
 
-        nameText = new JLabel("");
-        nameText.setBounds(180,y+40,150,20);
-        nameText.setFont(new Font("Arial",Font.PLAIN,15));
-        panel.add(nameText);
-
-
-        address = new JLabel("Address : ");
-        address.setFont(new Font("Arial",Font.BOLD,15));
-        address.setBounds(x,y+80,100,20);
-        panel.add(address);
-
-        addressText = new JLabel("");
-        addressText.setBounds(180,y+80,150,20);
-        addressText.setFont(new Font("Arial",Font.PLAIN,15));
-        panel.add(addressText);
-
-        try{
-            database c = new database();
-            ResultSet resultSet = c.statement.executeQuery("select *  from newCustomer where meter_no = '"+MeterChoice.getSelectedItem()+"'");
-            while(resultSet.next()){
-               nameText.setText(resultSet.getString("name"));
-               addressText.setText(resultSet.getString("address"));
-            }
-
-        }catch (Exception E){
-            E.printStackTrace();
-        }
-
-        // when i changed meter no my name and are not change then i have to some thing for this
-       MeterChoice.addItemListener(new ItemListener() {
-           public void itemStateChanged(ItemEvent e) {
-               try{
-                   database c = new database();
-                   ResultSet resultSet = c.statement.executeQuery("select *  from newCustomer where meter_no = '"+MeterChoice.getSelectedItem()+"'");
-                   while(resultSet.next()){
-                       nameText.setText(resultSet.getString("name"));
-                       addressText.setText(resultSet.getString("address"));
-                   }
-
-               }catch (Exception E){
-                   E.printStackTrace();
-               }
-           }
-       });
-
-        unitConsumed = new JLabel("Unit Consumed : ");
-        unitConsumed.setFont(new Font("Arial",Font.BOLD,15));
-        unitConsumed.setBounds(x,y+120,100,20);
-        panel.add(unitConsumed);
-
+        // Row 4: Unit Consumed
+        gbc.gridx = 0; gbc.gridy++;
+        card.add(new JLabel("Units Consumed:"), gbc);
         unitConsumedText = new JTextField();
-        unitConsumedText.setBounds(180,y+120,150,20);
-        unitConsumedText.setFont(new Font("Arial",Font.PLAIN,15));
-        panel.add(unitConsumedText);
+        gbc.gridx = 1;
+        card.add(unitConsumedText, gbc);
 
-        month = new JLabel("Month : ");
-        month.setFont(new Font("Arial",Font.BOLD,15));
-        month.setBounds(x,y+160,100,20);
-        panel.add(month);
-
+        // Row 5: Month
+        gbc.gridx = 0; gbc.gridy++;
+        card.add(new JLabel("Month:"), gbc);
         monthChoice = new Choice();
-        monthChoice.setBounds(180,y+160,150,20);
-        monthChoice.setFont(new Font("Arial",Font.PLAIN,15));
-        monthChoice.add("January");
-        monthChoice.add("February");
-        monthChoice.add("March");
-        monthChoice.add("April");
-        monthChoice.add("May");
-        monthChoice.add("June");
-        monthChoice.add("July");
-        monthChoice.add("August");
-        monthChoice.add("September");
-        monthChoice.add("October");
-        monthChoice.add("November");
-        monthChoice.add("December");
-        panel.add(monthChoice);
+        for (String m : new String[]{"January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"}) {
+            monthChoice.add(m);
+        }
+        gbc.gridx = 1;
+        card.add(monthChoice, gbc);
 
-        submit = new JButton("Submit");
-        submit.setFont(new Font("Arial",Font.BOLD,15));
-        submit.setBounds(150,y+220,100,30);
-        submit.setBackground(Color.black);
-        submit.setForeground(Color.white);
+        // Row 6: Buttons
+        gbc.gridx = 0; gbc.gridy++;
+        submit = new JButton("Generate Bill");
+        submit.setBackground(new Color(46, 204, 113));
+        submit.setForeground(Color.WHITE);
+        submit.setFocusPainted(false);
+        submit.setFont(new Font("Segoe UI", Font.BOLD, 14));
         submit.addActionListener(this);
-        panel.add(submit);
+        card.add(submit, gbc);
 
+        gbc.gridx = 1;
         cancelBtn = new JButton("Cancel");
-        cancelBtn.setFont(new Font("Arial",Font.BOLD,15));
-        cancelBtn.setBounds(300,y+220,100,30);
-        cancelBtn.setBackground(new Color(0xC20514));
-        cancelBtn.setForeground(Color.white);
+        cancelBtn.setBackground(new Color(231, 76, 60));
+        cancelBtn.setForeground(Color.WHITE);
+        cancelBtn.setFocusPainted(false);
+        cancelBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
         cancelBtn.addActionListener(this);
-        panel.add(cancelBtn);
+        card.add(cancelBtn, gbc);
 
+        MeterChoice.addItemListener(e -> {
+            try {
+                database c = new database();
+                ResultSet rs = c.statement.executeQuery("SELECT * FROM newCustomer WHERE meter_no = '" + MeterChoice.getSelectedItem() + "'");
+                while (rs.next()) {
+                    nameText.setText(rs.getString("name"));
+                    addressText.setText(rs.getString("address"));
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
 
-
-        setSize(700,500);
-        setLocation(400,200);
+        background.add(card);
+        setContentPane(background);
         setVisible(true);
-
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e){
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == submit) {
+            String meter = MeterChoice.getSelectedItem();
+            String month = monthChoice.getSelectedItem();
+            String unitStr = unitConsumedText.getText();
 
+            try {
+                int units = Integer.parseInt(unitStr);
+                int total = 0;
 
-        if(e.getSource() == submit){
-            String sMeterNo = MeterChoice.getSelectedItem();
-            String sMonth  = monthChoice.getSelectedItem();
-            String sUnit= unitConsumedText.getText();
-
-            int total_bill = 0;
-            int unit = Integer.parseInt(sUnit);
-
-            String query_text = "select * from tax";
-            try{
                 database c = new database();
-                ResultSet resultSet = c.statement.executeQuery(query_text);
-                while(resultSet.next()){
-                        total_bill += unit * Integer.parseInt(resultSet.getString("cost_per_unit"));
-                        total_bill += unit * Integer.parseInt(resultSet.getString("meter_rent"));
-                        total_bill += unit * Integer.parseInt(resultSet.getString("service_charge"));
-                        total_bill += unit * Integer.parseInt(resultSet.getString("service_charge"));
-                        total_bill += unit * Integer.parseInt(resultSet.getString("swatch_bharat"));
-                        total_bill += unit * Integer.parseInt(resultSet.getString("fixed_text"));
+                ResultSet rs = c.statement.executeQuery("SELECT * FROM tax");
+                while (rs.next()) {
+                    total += units * Integer.parseInt(rs.getString("cost_per_unit"));
+                    total += units * Integer.parseInt(rs.getString("meter_rent"));
+                    total += units * Integer.parseInt(rs.getString("service_charge"));
+                    total += units * Integer.parseInt(rs.getString("swatch_bharat"));
+                    total += units * Integer.parseInt(rs.getString("fixed_text"));
                 }
-            }catch (Exception E){
-                E.printStackTrace();
-            }
-            String total_Bill = "Insert into Bill values('"+sMeterNo+"','"+sMonth+"','"+sUnit+"','"+total_bill+"','Pending')";
 
-            try{
-                database c = new database();
-                c.statement.executeUpdate(total_Bill);  // set data in databases
-                JOptionPane.showMessageDialog(null,"Bill Generated Successfully");
+                c.statement.executeUpdate("INSERT INTO Bill VALUES('" + meter + "','" + month + "','" + units + "','" + total + "','Pending')");
+                JOptionPane.showMessageDialog(this, "Bill Generated Successfully");
+
                 setVisible(false);
-
-            }catch (Exception E){
-                E.printStackTrace();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Invalid Input or Database Error");
+                ex.printStackTrace();
             }
-        }
-
-        else{
+        } else if (e.getSource() == cancelBtn) {
             setVisible(false);
         }
     }
+
     public static void main(String[] args) {
         new calculate_bill();
     }
